@@ -41,7 +41,7 @@ namespace Supermarket.API.Controllers
       var result = await _categoryService.SaveAsync(category);
 
       if (!result.Success)
-        return BadRequest(result.Mesage);
+        return BadRequest(result.Message);
 
       var categoryResource = _mapper.Map<Category, CategoryResource>(result.Category);
       return Ok(categoryResource);
@@ -54,6 +54,18 @@ namespace Supermarket.API.Controllers
         return BadRequest(ModelState.GetErrorMessages());
       var category = _mapper.Map<SaveCategoryResource, Category>(resource);
       var result = await _categoryService.UpdateAsync(id, category);
+
+      if (!result.Success)
+        return BadRequest(result.Message);
+
+      var categoryResource = _mapper.Map<Category, CategoryResource>(result.Category);
+      return Ok(categoryResource);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteAsync(int id)
+    {
+      var result = await _categoryService.DeleteAsync(id);
 
       if (!result.Success)
         return BadRequest(result.Message);
