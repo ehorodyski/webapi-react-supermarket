@@ -24,6 +24,7 @@ namespace Supermarket.API.Services
       return await _categoryRepository.ListAsync();
     }
 
+
     public async Task<SaveCategoryResponse> SaveAsync(Category category)
     {
       try
@@ -35,6 +36,25 @@ namespace Supermarket.API.Services
       catch (Exception ex)
       {
         return new SaveCategoryResponse($"An error occurred when saving the category: {ex.Message}");
+      }
+    }
+
+    public async Task<SaveCategoryResponse> UpdateAsync(int id, Category category)
+    {
+      var existingCategory = await _categoryRepository.FindByIdAsync(id);
+
+      if (existingCategory == null)
+        return new SaveCategoryResponse("Category not found.");
+
+      try
+      {
+        _categoryRepository.Update(existingCategory);
+        await _unitOfWork.CompleteAsync();
+        return new SaveCategoryResponse(existingCategory);
+      }
+      catch (Exception ex)
+      {
+        return new SaveCategoryResponse($"An error occured when updating the category: {ex.Message}");
       }
     }
   }
